@@ -6,6 +6,8 @@
     <title>Tout est devant soi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:italic&display=swap');
+
         body { 
             background-color: #EDE6D8; 
             color: #311B14; 
@@ -31,7 +33,7 @@
             color: #8C7A70;
         }
 
-        .hidden { display: none !important; }
+        .hidden { display: none; }
 
         .card {
             background-color: #F5F0E6;
@@ -40,1170 +42,166 @@
             transition: all 0.2s ease;
         }
 
-        .card-star {
-            background-color: #F8F3EA;
-            border: 1.5px solid rgba(49, 27, 20, 0.25);
-            box-shadow: 0 4px 14px rgba(49, 27, 20, 0.08);
-        }
-
-        .custom-checkbox {
-            appearance: none;
-            width: 22px;
-            height: 22px;
-            border: 2px solid #311B14;
-            border-radius: 6px;
-            outline: none;
+        /* Убираем стандартные стили чекбоксов */
+        input[type="checkbox"] {
+            accent-color: #311B14;
+            width: 20px;
+            height: 20px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-
-        .custom-checkbox:checked {
-            background-color: #311B14;
-        }
-
-        .custom-checkbox:checked::after {
-            content: "✓";
-            color: #EDE6D8;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .sub-checkbox {
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            border: 1.5px solid #311B14;
-            border-radius: 4px;
-            outline: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: all 0.2s ease;
-        }
-
-        .sub-checkbox:checked {
-            background-color: #311B14;
-        }
-
-        .sub-checkbox:checked::after {
-            content: "✓";
-            color: #EDE6D8;
-            font-size: 10px;
-            font-weight: bold;
-        }
-
-        /* Настроение */
-        .mood-circle {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-            box-shadow: 0 2px 6px rgba(49, 27, 20, 0.08);
-        }
-
-        .mood-circle:active {
-            transform: scale(0.92);
-        }
-
-        .mood-selected {
-            transform: scale(1.15) !important;
-            box-shadow: 0 4px 12px rgba(49, 27, 20, 0.25) !important;
-            border: 2.5px solid #311B14 !important;
-        }
-
-        .counter-pill {
-            background-color: #EDE6D8;
-            border: 1px solid rgba(49, 27, 20, 0.15);
-            border-radius: 9999px;
-            padding: 2px 8px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        /* Таймер Фокуса */
-        .timer-circle-wrap {
-            position: relative;
-            width: 160px;
-            height: 160px;
-            margin: 0 auto;
-        }
-
-        .timer-circle-svg {
-            transform: rotate(-90deg);
-        }
-
-        .timer-circle-bg {
-            fill: none;
-            stroke: rgba(49, 27, 20, 0.1);
-            stroke-width: 6;
-        }
-
-        .timer-circle-progress {
-            fill: none;
-            stroke: #311B14;
-            stroke-width: 6;
-            stroke-linecap: round;
-            transition: stroke-dashoffset 0.5s linear;
         }
     </style>
 </head>
-<body class="min-h-screen pb-28">
-    <div class="max-w-md mx-auto p-4 flex flex-col min-h-screen justify-between">
+<body class="min-h-screen">
+    <div class="max-w-md mx-auto p-5 flex flex-col min-h-screen">
         
-        <div>
-            <!-- Шапка -->
-            <header class="pt-4 pb-2 text-center">
-                <h1 class="text-4xl title-font mb-1.5">Tout est devant soi</h1>
-                <p id="current-date" class="text-[11px] uppercase tracking-widest opacity-60"></p>
-            </header>
+        <!-- Заголовок -->
+        <header class="py-8">
+            <h1 class="text-4xl title-font text-center">Tout est devant soi</h1>
+        </header>
 
-            <!-- Прогресс дня -->
-            <div id="progress-container" class="mb-4 px-1">
-                <div class="flex justify-between text-[11px] opacity-70 mb-1">
-                    <span>Прогресс дня</span>
-                    <span id="progress-percent">0%</span>
-                </div>
-                <div class="w-full bg-[#311B14]/10 h-[3px] rounded-full overflow-hidden">
-                    <div id="progress-bar" class="bg-[#311B14] h-full transition-all duration-500" style="width: 0%"></div>
-                </div>
+        <!-- Навигация -->
+        <nav class="flex justify-around border-b border-[#311B14]/10 mb-8">
+            <button onclick="switchTab('tasks')" id="tab-tasks" class="pb-3 px-2 text-sm uppercase tracking-widest tab-active">Задачи</button>
+            <button onclick="switchTab('habits')" id="tab-habits" class="pb-3 px-2 text-sm uppercase tracking-widest tab-inactive">Привычки</button>
+            <button onclick="switchTab('mood')" id="tab-mood" class="pb-3 px-2 text-sm uppercase tracking-widest tab-inactive">Мотивация</button>
+        </nav>
+
+        <!-- Основной контент -->
+        <main class="flex-grow">
+            <!-- Секция Задач -->
+            <div id="section-tasks" class="space-y-3">
+                <div id="tasks-list" class="space-y-3"></div>
             </div>
 
-            <!-- Навигация (6 вкладок с аккуратной версткой) -->
-            <nav class="flex justify-between items-center border-b border-[#311B14]/10 mb-5 text-center px-1">
-                <button onclick="switchTab('tasks')" id="tab-tasks" class="pb-2.5 px-1 text-[11px] uppercase tracking-wider tab-active">Задачи</button>
-                <button onclick="switchTab('habits')" id="tab-habits" class="pb-2.5 px-1 text-[11px] uppercase tracking-wider tab-inactive">Привычки</button>
-                <button onclick="switchTab('schedule')" id="tab-schedule" class="pb-2.5 px-1 text-[11px] uppercase tracking-wider tab-inactive">День</button>
-                <button onclick="switchTab('focus')" id="tab-focus" class="pb-2.5 px-1 text-base tab-inactive transition-all" title="Фокус">⏱️</button>
-                <button onclick="switchTab('sleep')" id="tab-sleep" class="pb-2.5 px-1 text-base tab-inactive transition-all" title="Сон и мысли">🌙</button>
-                <button onclick="switchTab('mood')" id="tab-mood" class="pb-2.5 px-1 text-base tab-inactive transition-all" title="Галерея">🤍</button>
-            </nav>
+            <!-- Секция Привычек -->
+            <div id="section-habits" class="space-y-3 hidden">
+                <div id="habits-list" class="space-y-3"></div>
+            </div>
 
-            <!-- Контент -->
-            <main>
-                <!-- 1. ЗАДАЧИ -->
-                <div id="section-tasks" class="space-y-3">
-                    <!-- Блок Главной Победы Дня (One Big Thing) -->
-                    <div id="star-task-container"></div>
-                    
-                    <div class="flex justify-between items-center px-1 pt-1">
-                        <span class="text-[11px] uppercase tracking-wider opacity-60 font-medium">Все дела</span>
-                        <span class="text-[10px] opacity-40">нажми ☆ чтобы сделать главным</span>
-                    </div>
-                    <div id="tasks-list" class="space-y-3"></div>
-
-                    <!-- Раздел Наград / Списка радостей -->
-                    <div class="card p-4 mt-6">
-                        <div class="flex justify-between items-center mb-1">
-                            <h3 class="text-xs uppercase tracking-wider font-semibold opacity-80">🎁 Копилка наград за сделанные дела</h3>
-                            <button onclick="openRewardModal()" class="text-xs font-semibold px-2 py-1 bg-[#311B14] text-[#EDE6D8] rounded-lg shadow-sm">+ Награда</button>
-                        </div>
-                        <p class="text-[11px] opacity-60 mb-3">Порадуй себя после выполнения дел (сериал, кофе, ванна):</p>
-                        <div id="rewards-list" class="space-y-2"></div>
-                    </div>
-                </div>
-
-                <!-- 2. ПРИВЫЧКИ -->
-                <div id="section-habits" class="space-y-3 hidden">
-                    <div id="habits-list" class="space-y-3"></div>
-                </div>
-
-                <!-- 3. РАСПОРЯДОК ДНЯ -->
-                <div id="section-schedule" class="space-y-3 hidden">
-                    <div class="flex justify-between items-center px-1 mb-2">
-                        <span class="text-[11px] uppercase tracking-wider opacity-60 font-medium">Хронология твоего дня</span>
-                        <span class="text-[10px] opacity-40">по времени</span>
-                    </div>
-                    <div id="schedule-list" class="space-y-3"></div>
-                </div>
-
-                <!-- 4. НОВЫЙ РАЗДЕЛ: ТАЙМЕР ФОКУСА ⏱️ -->
-                <div id="section-focus" class="space-y-5 hidden">
-                    <div class="card p-6 text-center shadow-sm">
-                        <!-- Режим таймера -->
-                        <div class="flex justify-center gap-2 mb-4">
-                            <button id="btn-mode-work" onclick="setTimerMode('work')" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#311B14] text-[#EDE6D8] transition">Фокус</button>
-                            <button id="btn-mode-break" onclick="setTimerMode('break')" class="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#311B14]/10 opacity-70 transition">Отдых</button>
-                        </div>
-
-                        <!-- Круговой прогресс таймера -->
-                        <div class="timer-circle-wrap my-4 flex items-center justify-center">
-                            <svg class="timer-circle-svg" width="160" height="160">
-                                <circle class="timer-circle-bg" cx="80" cy="80" r="70"></circle>
-                                <circle id="timer-progress" class="timer-circle-progress" cx="80" cy="80" r="70" stroke-dasharray="440" stroke-dashoffset="0"></circle>
-                            </svg>
-                            <div class="absolute flex flex-col items-center">
-                                <span id="timer-display" class="text-3xl font-bold tracking-tight">15:00</span>
-                                <span id="timer-status-text" class="text-[10px] uppercase tracking-widest opacity-60 mt-1">правило 5-15 минут</span>
-                            </div>
-                        </div>
-
-                        <!-- Кнопки управления -->
-                        <div class="flex justify-center gap-3 mt-4">
-                            <button id="timer-start-btn" onclick="toggleTimer()" class="px-7 py-3 bg-[#311B14] text-[#EDE6D8] rounded-xl text-xs font-semibold tracking-wider active:scale-95 shadow-md">
-                                НАЧАТЬ
-                            </button>
-                            <button onclick="resetTimer()" class="px-4 py-3 bg-[#EDE6D8] border border-[#311B14]/20 rounded-xl text-xs font-medium opacity-70">
-                                Сброс
-                            </button>
-                        </div>
-
-                        <!-- Настройки времени -->
-                        <div class="mt-6 pt-5 border-t border-[#311B14]/10 text-left">
-                            <span class="text-[10px] uppercase tracking-wider opacity-60 block mb-3 font-semibold text-center">Настрой удобное время под себя:</span>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div class="bg-[#EDE6D8] p-3 rounded-xl border border-[#311B14]/10">
-                                    <label class="block text-[10px] opacity-70 mb-1">Время работы (мин):</label>
-                                    <input type="number" id="custom-work-min" value="15" min="1" max="120" onchange="updateTimerSettings()"
-                                           class="w-full bg-transparent font-bold text-sm outline-none">
-                                </div>
-                                <div class="bg-[#EDE6D8] p-3 rounded-xl border border-[#311B14]/10">
-                                    <label class="block text-[10px] opacity-70 mb-1">Время отдыха (мин):</label>
-                                    <input type="number" id="custom-break-min" value="5" min="1" max="60" onchange="updateTimerSettings()"
-                                           class="w-full bg-transparent font-bold text-sm outline-none">
-                                </div>
-                            </div>
-                            <p class="text-[10px] opacity-50 mt-2.5 text-center leading-relaxed">Договорись с собой поработать всего 5–15 минут. Этого достаточно, чтобы мозг включился!</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 5. СОН, МЫСЛИ И НАСТРОЕНИЕ 🌙 -->
-                <div id="section-sleep" class="space-y-5 hidden">
-                    <div class="card p-4">
-                        <div class="flex justify-between items-center mb-1">
-                            <h3 class="text-xs uppercase tracking-wider font-semibold opacity-70">Настроение сегодня</h3>
-                            <span id="mood-status-label" class="text-[11px] font-medium opacity-60">не выбрано</span>
-                        </div>
-                        <p class="text-[11px] opacity-60 mb-3">Как ты себя чувствуешь сегодня?</p>
-                        
-                        <div class="flex justify-between items-center px-1 py-1">
-                            <div class="flex flex-col items-center gap-1">
-                                <button onclick="setTodayMood('black')" id="mood-btn-black" class="mood-circle bg-[#1A1A1A] border border-[#311B14]/30"></button>
-                                <span class="text-[9px] opacity-60">плохо</span>
-                            </div>
-                            <div class="flex flex-col items-center gap-1">
-                                <button onclick="setTodayMood('red')" id="mood-btn-red" class="mood-circle bg-[#D9534F] border border-[#311B14]/20"></button>
-                                <span class="text-[9px] opacity-60">пойдет</span>
-                            </div>
-                            <div class="flex flex-col items-center gap-1">
-                                <button onclick="setTodayMood('orange')" id="mood-btn-orange" class="mood-circle bg-[#F0AD4E] border border-[#311B14]/20"></button>
-                                <span class="text-[9px] opacity-60">нормально</span>
-                            </div>
-                            <div class="flex flex-col items-center gap-1">
-                                <button onclick="setTodayMood('white')" id="mood-btn-white" class="mood-circle bg-[#FFFFFF] border border-[#311B14]/20"></button>
-                                <span class="text-[9px] opacity-60">хорошо</span>
-                            </div>
-                            <div class="flex flex-col items-center gap-1">
-                                <button onclick="setTodayMood('pink')" id="mood-btn-pink" class="mood-circle bg-[#F8BBD0] border border-[#311B14]/20"></button>
-                                <span class="text-[9px] opacity-60">отлично</span>
-                            </div>
-                        </div>
-
-                        <div class="mt-4 pt-3 border-t border-[#311B14]/10">
-                            <span class="text-[10px] uppercase tracking-wider opacity-60 block mb-2">История за последние дни:</span>
-                            <div id="mood-history-list" class="flex gap-2 overflow-x-auto pb-1"></div>
-                        </div>
-                    </div>
-
-                    <div class="card p-4">
-                        <div class="flex justify-between items-center mb-1">
-                            <h3 class="text-xs uppercase tracking-wider font-semibold opacity-70">Дневник ночных мыслей</h3>
-                            <span class="text-[10px] opacity-50">архив</span>
-                        </div>
-                        <p class="text-[11px] opacity-60 mb-2.5 leading-relaxed">Выпиши всё, что в голове, чтобы заснуть со спокойным умом.</p>
-                        
-                        <textarea id="thought-input" rows="3" 
-                                  class="w-full p-3 bg-[#EDE6D8] border border-[#311B14]/10 rounded-xl focus:outline-none text-sm resize-none mb-2.5 placeholder:opacity-40"
-                                  placeholder="Что сейчас в мыслях?"></textarea>
-                        
-                        <button onclick="saveNightThought()" class="w-full py-2.5 bg-[#311B14] text-[#EDE6D8] text-xs font-semibold rounded-xl transition active:scale-98 shadow-sm">
-                            ✨ Сохранить мысль в дневник
-                        </button>
-
-                        <div class="mt-4 pt-3 border-t border-[#311B14]/10">
-                            <span class="text-[10px] uppercase tracking-wider opacity-60 block mb-2">Архив твоих мыслей:</span>
-                            <div id="thoughts-archive-list" class="space-y-2 max-h-52 overflow-y-auto pr-1"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 6. ДОСКА 🤍 (Pinterest) -->
-                <div id="section-mood" class="hidden">
-                    <div id="mood-empty" class="text-center py-10 opacity-50 text-xs hidden">
-                        Твоя доска пока пуста.<br>Нажми кнопку ниже, чтобы загрузить фото или видео из галереи!
-                    </div>
-                    <div id="images-grid" class="columns-2 gap-3 space-y-3"></div>
-                </div>
-            </main>
-        </div>
+            <!-- Секция Мотивации -->
+            <div id="section-mood" class="space-y-4 hidden">
+                <div id="images-grid" class="grid grid-cols-2 gap-3"></div>
+            </div>
+        </main>
 
         <!-- Кнопка добавления -->
-        <div id="add-btn-container" class="fixed bottom-0 left-0 right-0 p-4 bg-[#EDE6D8]/95 backdrop-blur-md max-w-md mx-auto z-40">
-            <button onclick="openModal()" class="w-full bg-[#311B14] text-[#EDE6D8] py-4 rounded-2xl shadow-xl active:scale-95 transition-transform font-medium">
+        <footer class="mt-8">
+            <button onclick="handleAddItem()" class="w-full bg-[#311B14] text-[#EDE6D8] py-4 rounded-2xl shadow-xl active:scale-95 transition-transform font-medium">
                 + Добавить запись
             </button>
-        </div>
-    </div>
-
-    <!-- МОДАЛЬНОЕ ОКНО ДОБАВЛЕНИЯ ЗАПИСЕЙ -->
-    <div id="custom-modal" class="hidden fixed inset-0 bg-[#311B14]/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-[#F5F0E6] w-full max-w-xs rounded-3xl p-5 border border-[#311B14]/10 shadow-2xl">
-            <h3 id="modal-title" class="text-base font-semibold mb-3 tracking-wide text-center">Добавить запись</h3>
-            
-            <div id="modal-text-group">
-                <input type="text" id="modal-input" 
-                       class="w-full p-3 bg-[#EDE6D8] border border-[#311B14]/20 rounded-xl focus:outline-none focus:border-[#311B14] mb-3 text-sm" 
-                       placeholder="Название...">
-            </div>
-
-            <!-- Микро-шаги (подзадачи) для Задач -->
-            <div id="modal-subtasks-group" class="mb-3">
-                <label class="block text-[10px] uppercase tracking-wider opacity-60 mb-1">Разбить на шаги (через запятую):</label>
-                <input type="text" id="modal-subtasks-input" 
-                       class="w-full p-2.5 bg-[#EDE6D8] border border-[#311B14]/20 rounded-xl focus:outline-none text-xs text-[#311B14]"
-                       placeholder="Открыть тетрадь, пункт 1, вывод">
-            </div>
-
-            <div id="modal-target-group" class="mb-3">
-                <label class="block text-[10px] uppercase tracking-wider opacity-60 mb-1">Сколько раз нужно выполнить?</label>
-                <input type="number" id="modal-target-input" min="1" max="20" value="1"
-                       class="w-full p-2.5 bg-[#EDE6D8] border border-[#311B14]/20 rounded-xl focus:outline-none text-xs text-[#311B14]">
-            </div>
-
-            <div id="modal-date-group" class="mb-3">
-                <label class="block text-[10px] uppercase tracking-wider opacity-60 mb-1">Срок выполнения (необязательно):</label>
-                <input type="date" id="modal-date-input" 
-                       class="w-full p-2.5 bg-[#EDE6D8] border border-[#311B14]/20 rounded-xl focus:outline-none text-xs text-[#311B14]">
-            </div>
-
-            <div id="modal-time-group" class="hidden mb-3">
-                <label class="block text-[10px] uppercase tracking-wider opacity-60 mb-1">Время:</label>
-                <input type="time" id="modal-time-input" value="08:00"
-                       class="w-full p-2.5 bg-[#EDE6D8] border border-[#311B14]/20 rounded-xl focus:outline-none text-xs text-[#311B14]">
-            </div>
-
-            <div id="modal-file-group" class="hidden mb-4">
-                <label for="media-file-input" class="w-full p-4 border border-dashed border-[#311B14]/30 rounded-2xl flex flex-col items-center justify-center cursor-pointer bg-[#EDE6D8] hover:bg-[#E7DFD0] transition">
-                    <span class="text-2xl mb-1">📷</span>
-                    <span id="file-label-text" class="text-xs font-medium text-center">Выбрать фото/видео из галереи</span>
-                    <span class="text-[9px] opacity-50 mt-1">JPG, PNG, MP4</span>
-                </label>
-                <input type="file" id="media-file-input" accept="image/*,video/*" class="hidden" onchange="handleFileSelect(event)">
-            </div>
-            
-            <div class="flex justify-end gap-3 text-xs uppercase tracking-wider mt-2">
-                <button onclick="closeModal()" class="px-4 py-2 opacity-50 font-semibold">Отмена</button>
-                <button onclick="saveModalItem()" class="px-5 py-2 bg-[#311B14] text-[#EDE6D8] rounded-xl font-semibold">ОК</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- МОДАЛЬНОЕ ОКНО ДОБАВЛЕНИЯ НАГРАДЫ -->
-    <div id="reward-modal" class="hidden fixed inset-0 bg-[#311B14]/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-[#F5F0E6] w-full max-w-xs rounded-3xl p-5 border border-[#311B14]/10 shadow-2xl">
-            <h3 class="text-base font-semibold mb-3 tracking-wide text-center">Новая награда</h3>
-            <p class="text-[11px] opacity-60 mb-3 text-center">Чем ты себя порадуешь за выполненные дела?</p>
-            <input type="text" id="reward-input" 
-                   class="w-full p-3 bg-[#EDE6D8] border border-[#311B14]/20 rounded-xl focus:outline-none text-sm mb-4" 
-                   placeholder="Например: Вкусный десерт">
-            <div class="flex justify-end gap-3 text-xs uppercase tracking-wider">
-                <button onclick="closeRewardModal()" class="px-4 py-2 opacity-50 font-semibold">Отмена</button>
-                <button onclick="saveRewardItem()" class="px-5 py-2 bg-[#311B14] text-[#EDE6D8] rounded-xl font-semibold">ОК</button>
-            </div>
-        </div>
+        </footer>
     </div>
 
     <script>
-        // IndexedDB для медиа (Галерея)
-        let db;
-        const request = indexedDB.open("ToutEstDevantSoiDB", 1);
-        request.onupgradeneeded = (e) => {
-            const database = e.target.result;
-            if (!database.objectStoreNames.contains("media")) {
-                database.createObjectStore("media", { keyPath: "id", autoIncrement: true });
-            }
-        };
-        request.onsuccess = (e) => {
-            db = e.target.result;
-            loadMediaFromDB();
-        };
-
-        // Состояние
+        // Инициализация данных из памяти (LocalStorage)
         let state = {
             activeTab: 'tasks',
-            starTaskId: localStorage.getItem('starTaskId') || null, // Главная победа дня
             tasks: JSON.parse(localStorage.getItem('tasks')) || [],
             habits: JSON.parse(localStorage.getItem('habits')) || [],
-            schedule: JSON.parse(localStorage.getItem('schedule')) || [
-                { time: "07:30", text: "Подъем и стакан воды", done: false },
-                { time: "08:00", text: "Утренняя рутина / завтрак", done: false },
-                { time: "22:30", text: "Подготовка ко сну и отдых", done: false }
-            ],
-            rewards: JSON.parse(localStorage.getItem('rewards')) || [
-                { text: "Посмотреть серию любимого сериала", claimed: false },
-                { text: "Вкусный кофе или чай с десертом", claimed: false }
-            ],
-            moodHistory: JSON.parse(localStorage.getItem('moodHistory')) || {},
-            thoughtsList: JSON.parse(localStorage.getItem('thoughtsList')) || [],
-            mediaList: []
+            images: JSON.parse(localStorage.getItem('images')) || [
+                "https://images.unsplash.com/photo-1518495973542-4542c06a5843?q=80&w=600&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=600&auto=format&fit=crop"
+            ]
         };
-
-        let selectedMediaBase64 = null;
-        let selectedMediaType = null;
-
-        function getTodayString() {
-            const d = new Date();
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        }
-
-        function renderDate() {
-            const options = { weekday: 'long', day: 'numeric', month: 'long' };
-            let dateStr = new Date().toLocaleDateString('ru-RU', options);
-            document.getElementById('current-date').innerText = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
-        }
 
         function saveData() {
             localStorage.setItem('tasks', JSON.stringify(state.tasks));
             localStorage.setItem('habits', JSON.stringify(state.habits));
-            localStorage.setItem('schedule', JSON.stringify(state.schedule));
-            localStorage.setItem('rewards', JSON.stringify(state.rewards));
-            localStorage.setItem('moodHistory', JSON.stringify(state.moodHistory));
-            localStorage.setItem('thoughtsList', JSON.stringify(state.thoughtsList));
-            if (state.starTaskId) localStorage.setItem('starTaskId', state.starTaskId);
-            else localStorage.removeItem('starTaskId');
+            localStorage.setItem('images', JSON.stringify(state.images));
         }
 
+        // Переключение вкладок
         function switchTab(tabName) {
             state.activeTab = tabName;
             
-            ['tasks', 'habits', 'schedule', 'focus', 'sleep', 'mood'].forEach(t => {
+            // Стили кнопок
+            ['tasks', 'habits', 'mood'].forEach(t => {
                 const btn = document.getElementById(`tab-${t}`);
                 const sec = document.getElementById(`section-${t}`);
-                
                 if (t === tabName) {
-                    if (['mood', 'sleep', 'focus'].includes(t)) {
-                        btn.className = "pb-2.5 px-1 text-base tab-active scale-110";
-                    } else {
-                        btn.className = "pb-2.5 px-1 text-[11px] uppercase tracking-wider tab-active";
-                    }
+                    btn.className = "pb-3 px-2 text-sm uppercase tracking-widest tab-active";
                     sec.classList.remove('hidden');
                 } else {
-                    if (['mood', 'sleep', 'focus'].includes(t)) {
-                        btn.className = "pb-2.5 px-1 text-base tab-inactive";
-                    } else {
-                        btn.className = "pb-2.5 px-1 text-[11px] uppercase tracking-wider tab-inactive";
-                    }
+                    btn.className = "pb-3 px-2 text-sm uppercase tracking-widest tab-inactive";
                     sec.classList.add('hidden');
                 }
             });
-
-            const addBtn = document.getElementById('add-btn-container');
-            if (tabName === 'sleep' || tabName === 'focus') {
-                addBtn.classList.add('hidden');
-            } else {
-                addBtn.classList.remove('hidden');
-            }
-
             render();
         }
 
-        // ==================== ТАЙМЕР ФОКУСА (КАСТОМНЫЙ) ====================
-        let timerMode = 'work'; // 'work' или 'break'
-        let timerSeconds = 15 * 60;
-        let timerTotalSeconds = 15 * 60;
-        let timerInterval = null;
-
-        function setTimerMode(mode) {
-            timerMode = mode;
-            const workMin = parseInt(document.getElementById('custom-work-min').value, 10) || 15;
-            const breakMin = parseInt(document.getElementById('custom-break-min').value, 10) || 5;
-
-            document.getElementById('btn-mode-work').className = (mode === 'work') 
-                ? "px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#311B14] text-[#EDE6D8] transition"
-                : "px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#311B14]/10 opacity-70 transition";
-            
-            document.getElementById('btn-mode-break').className = (mode === 'break') 
-                ? "px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#311B14] text-[#EDE6D8] transition"
-                : "px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#311B14]/10 opacity-70 transition";
-
-            timerSeconds = (mode === 'work' ? workMin : breakMin) * 60;
-            timerTotalSeconds = timerSeconds;
-            
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                document.getElementById('timer-start-btn').innerText = "НАЧАТЬ";
-            }
-            updateTimerDisplay();
-        }
-
-        function updateTimerSettings() {
-            setTimerMode(timerMode);
-        }
-
-        function toggleTimer() {
-            const btn = document.getElementById('timer-start-btn');
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-                btn.innerText = "ПРОДОЛЖИТЬ";
-            } else {
-                btn.innerText = "ПАУЗА";
-                triggerVibration('medium');
-                timerInterval = setInterval(() => {
-                    if (timerSeconds > 0) {
-                        timerSeconds--;
-                        updateTimerDisplay();
-                    } else {
-                        clearInterval(timerInterval);
-                        timerInterval = null;
-                        btn.innerText = "НАЧАТЬ";
-                        triggerVibration('success');
-                        alert(timerMode === 'work' ? "Время работы вышло! Сделай заслуженный перерыв ☕️" : "Перерыв окончен! Готова к новым победам? ✨");
-                        setTimerMode(timerMode === 'work' ? 'break' : 'work');
-                    }
-                }, 1000);
-            }
-        }
-
-        function resetTimer() {
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-            document.getElementById('timer-start-btn').innerText = "НАЧАТЬ";
-            setTimerMode(timerMode);
-        }
-
-        function updateTimerDisplay() {
-            const m = Math.floor(timerSeconds / 60);
-            const s = timerSeconds % 60;
-            document.getElementById('timer-display').innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-
-            // Прогресс круга (длина 440)
-            const circle = document.getElementById('timer-progress');
-            const fraction = timerSeconds / timerTotalSeconds;
-            const offset = 440 * (1 - fraction);
-            circle.style.strokeDashoffset = offset;
-        }
-
-        // ==================== НАГРАДЫ (REWARDS) ====================
-        function openRewardModal() {
-            document.getElementById('reward-input').value = '';
-            document.getElementById('reward-modal').classList.remove('hidden');
-        }
-
-        function closeRewardModal() {
-            document.getElementById('reward-modal').classList.add('hidden');
-        }
-
-        function saveRewardItem() {
-            const val = document.getElementById('reward-input').value.trim();
-            if (val) {
-                state.rewards.push({ text: val, claimed: false });
-                saveData();
-                renderRewards();
-            }
-            closeRewardModal();
-        }
-
-        function toggleReward(index) {
-            state.rewards[index].claimed = !state.rewards[index].claimed;
-            saveData();
-            renderRewards();
-            triggerVibration('success');
-        }
-
-        function deleteReward(index) {
-            state.rewards.splice(index, 1);
-            saveData();
-            renderRewards();
-        }
-
-        function renderRewards() {
-            const list = document.getElementById('rewards-list');
-            if (state.rewards.length === 0) {
-                list.innerHTML = '<span class="text-[10px] opacity-40 italic">Добавь себе маленькую награду за труды!</span>';
-                return;
-            }
-            list.innerHTML = state.rewards.map((r, i) => `
-                <div class="flex items-center justify-between p-2.5 bg-[#EDE6D8] rounded-xl border border-[#311B14]/10">
-                    <div class="flex items-center gap-2 cursor-pointer flex-grow" onclick="toggleReward(${i})">
-                        <span class="text-sm">${r.claimed ? '🎉' : '🎁'}</span>
-                        <span class="text-xs ${r.claimed ? 'line-through opacity-40 font-medium' : 'font-medium'}">${r.text}</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="toggleReward(${i})" class="text-[10px] px-2 py-0.5 rounded-lg border border-[#311B14]/20 ${r.claimed ? 'bg-[#311B14] text-[#EDE6D8]' : ''}">
-                            ${r.claimed ? 'Забрала!' : 'Забрать'}
-                        </button>
-                        <button onclick="deleteReward(${i})" class="text-xs opacity-25 p-1">✕</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // ==================== ЗАДАЧИ И МИКРО-ШАГИ ====================
-        function toggleStarTask(taskId) {
-            if (state.starTaskId === taskId) {
-                state.starTaskId = null; // убираем статус главного дела
-            } else {
-                state.starTaskId = taskId; // делаем главным делом
-                triggerVibration('medium');
-            }
-            saveData();
-            render();
-        }
-
-        function toggleSubtask(taskIndex, subIndex) {
-            const task = state.tasks[taskIndex];
-            task.subtasks[subIndex].done = !task.subtasks[subIndex].done;
-            
-            // Если все подзадачи выполнены - завершаем всю задачу
-            const allSubDone = task.subtasks.every(st => st.done);
-            if (allSubDone) {
-                task.done = true;
-                task.currentCount = task.targetCount || 1;
-                triggerVibration('success');
-            }
-            saveData();
-            render();
-        }
-
-        function incrementTaskCount(index) {
-            const t = state.tasks[index];
-            const target = t.targetCount || 1;
-            let current = t.currentCount || 0;
-
-            if (current < target) {
-                current += 1;
-            } else {
-                current = 0;
-            }
-
-            t.currentCount = current;
-            t.done = (current >= target);
-            if (t.done && t.subtasks) {
-                t.subtasks.forEach(st => st.done = true);
-            }
-            saveData();
-            render();
-            triggerVibration('light');
-        }
-
-        function incrementHabitCount(index) {
-            const h = state.habits[index];
-            const today = getTodayString();
-            const target = h.targetCount || 1;
-
-            if (h.lastCompletedDate !== today) {
-                h.lastCompletedDate = today;
-                h.todayCount = 0;
-            }
-
-            if (h.todayCount < target) {
-                h.todayCount += 1;
-                if (h.todayCount === target) {
-                    h.streak += 1;
-                    triggerVibration('medium');
-                } else {
-                    triggerVibration('light');
-                }
-            } else {
-                h.todayCount = 0;
-                h.streak = Math.max(0, h.streak - 1);
-            }
-
-            saveData();
-            render();
-        }
-
-        function toggleScheduleItem(index) {
-            state.schedule[index].done = !state.schedule[index].done;
-            saveData();
-            render();
-            triggerVibration('light');
-        }
-
-        // НАСТРОЕНИЕ
-        const moodNames = { black: "Плохо", red: "Пойдет", orange: "Нормально", white: "Хорошо", pink: "Очень хорошо" };
-        const moodColorHex = { black: "#1A1A1A", red: "#D9534F", orange: "#F0AD4E", white: "#FFFFFF", pink: "#F8BBD0" };
-
-        function setTodayMood(color) {
-            const today = getTodayString();
-            state.moodHistory[today] = color;
-            saveData();
-            renderMoodTracker();
-            triggerVibration('medium');
-        }
-
-        function renderMoodTracker() {
-            const today = getTodayString();
-            const currentMood = state.moodHistory[today];
-            const label = document.getElementById('mood-status-label');
-
-            ['black', 'red', 'orange', 'white', 'pink'].forEach(c => {
-                const btn = document.getElementById(`mood-btn-${c}`);
-                if (currentMood === c) btn.classList.add('mood-selected');
-                else btn.classList.remove('mood-selected');
-            });
-
-            if (currentMood) {
-                label.innerText = moodNames[currentMood];
-                label.style.opacity = "1";
-            } else {
-                label.innerText = "не выбрано";
-                label.style.opacity = "0.5";
-            }
-
-            const historyContainer = document.getElementById('mood-history-list');
-            const dates = Object.keys(state.moodHistory).sort().reverse().slice(0, 10);
-
-            if (dates.length === 0) {
-                historyContainer.innerHTML = '<span class="text-[11px] opacity-40">Пока нет записей</span>';
-            } else {
-                historyContainer.innerHTML = dates.map(d => {
-                    const color = state.moodHistory[d];
-                    const [y, m, dayNum] = d.split('-');
-                    return `
-                        <div class="flex flex-col items-center gap-1 bg-[#EDE6D8] px-2 py-1 rounded-xl border border-[#311B14]/10 shrink-0">
-                            <span class="text-[9px] opacity-60">${dayNum}.${m}</span>
-                            <div class="w-3.5 h-3.5 rounded-full border border-[#311B14]/20" style="background-color: ${moodColorHex[color]}"></div>
-                        </div>
-                    `;
-                }).join('');
-            }
-        }
-
-        // МЫСЛИ
-        function saveNightThought() {
-            const input = document.getElementById('thought-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
-            const timeStr = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-
-            state.thoughtsList.unshift({ id: Date.now(), date: `${dateStr}, ${timeStr}`, text: text });
-            input.value = "";
-            saveData();
-            renderThoughtsArchive();
-            triggerVibration('success');
-        }
-
-        function deleteThought(id) {
-            if (confirm("Удалить эту мысль из дневника?")) {
-                state.thoughtsList = state.thoughtsList.filter(item => item.id !== id);
-                saveData();
-                renderThoughtsArchive();
-            }
-        }
-
-        function renderThoughtsArchive() {
-            const container = document.getElementById('thoughts-archive-list');
-            if (state.thoughtsList.length === 0) {
-                container.innerHTML = '<p class="text-[11px] opacity-40 italic">Здесь будут храниться все твои ночные мысли...</p>';
-                return;
-            }
-
-            container.innerHTML = state.thoughtsList.map(item => `
-                <div class="p-3 bg-[#EDE6D8] rounded-xl border border-[#311B14]/10 relative group">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-[9px] uppercase tracking-wider opacity-50">${item.date}</span>
-                        <button onclick="deleteThought(${item.id})" class="text-[10px] opacity-30 hover:opacity-100 p-0.5">✕</button>
-                    </div>
-                    <p class="text-xs leading-relaxed opacity-80 whitespace-pre-wrap">${item.text}</p>
-                </div>
-            `).join('');
-        }
-
-        // МОДАЛЬНОЕ ОКНО
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const label = document.getElementById('file-label-text');
-            label.innerText = `Выбрано: ${file.name.slice(0, 18)}...`;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                selectedMediaBase64 = e.target.result;
-                selectedMediaType = file.type.startsWith('video') ? 'video' : 'image';
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function openModal() {
-            const modal = document.getElementById('custom-modal');
-            const title = document.getElementById('modal-title');
-            const input = document.getElementById('modal-input');
-            const subtasksInput = document.getElementById('modal-subtasks-input');
-            const targetInput = document.getElementById('modal-target-input');
-            const dateInput = document.getElementById('modal-date-input');
-            const timeInput = document.getElementById('modal-time-input');
-
-            const textGroup = document.getElementById('modal-text-group');
-            const subtasksGroup = document.getElementById('modal-subtasks-group');
-            const targetGroup = document.getElementById('modal-target-group');
-            const dateGroup = document.getElementById('modal-date-group');
-            const timeGroup = document.getElementById('modal-time-group');
-            const fileGroup = document.getElementById('modal-file-group');
-            
-            input.value = '';
-            subtasksInput.value = '';
-            targetInput.value = '1';
-            dateInput.value = '';
-            selectedMediaBase64 = null;
-            selectedMediaType = null;
-            document.getElementById('file-label-text').innerText = "Выбрать фото/видео из галереи";
-            document.getElementById('media-file-input').value = "";
-            
-            textGroup.classList.remove('hidden');
-            subtasksGroup.classList.add('hidden');
-            targetGroup.classList.add('hidden');
-            dateGroup.classList.add('hidden');
-            timeGroup.classList.add('hidden');
-            fileGroup.classList.add('hidden');
-
+        // Логика добавления
+        function handleAddItem() {
             if (state.activeTab === 'tasks') {
-                title.innerText = "Новая задача";
-                input.placeholder = "Например: Сделать проект";
-                subtasksGroup.classList.remove('hidden');
-                targetGroup.classList.remove('hidden');
-                dateGroup.classList.remove('hidden');
+                const val = prompt("Какую задачу добавим?");
+                if (val) state.tasks.push({ text: val, done: false });
             } else if (state.activeTab === 'habits') {
-                title.innerText = "Новая привычка";
-                input.placeholder = "Например: Выпить 2 литра воды";
-                targetGroup.classList.remove('hidden');
-            } else if (state.activeTab === 'schedule') {
-                title.innerText = "Событие дня";
-                input.placeholder = "Например: Урок английского";
-                timeGroup.classList.remove('hidden');
+                const val = prompt("Название новой привычки?");
+                if (val) state.habits.push({ text: val, streak: 0 });
             } else if (state.activeTab === 'mood') {
-                title.innerText = "Добавить в галерею";
-                textGroup.classList.add('hidden');
-                fileGroup.classList.remove('hidden');
+                const val = prompt("Вставь ссылку на картинку из интернета:");
+                if (val) state.images.push(val);
             }
-            
-            modal.classList.remove('hidden');
-            if (state.activeTab !== 'mood') input.focus();
+            saveData();
+            render();
         }
 
-        function closeModal() {
-            document.getElementById('custom-modal').classList.add('hidden');
-        }
-
-        function saveModalItem() {
-            const val = document.getElementById('modal-input').value.trim();
-            const subtasksRaw = document.getElementById('modal-subtasks-input').value.trim();
-            const targetVal = parseInt(document.getElementById('modal-target-input').value, 10) || 1;
-            const dueDateVal = document.getElementById('modal-date-input').value;
-            const timeVal = document.getElementById('modal-time-input').value;
-
-            if (state.activeTab === 'tasks') {
-                if (val) {
-                    let subtasks = [];
-                    if (subtasksRaw) {
-                        subtasks = subtasksRaw.split(',').map(s => s.trim()).filter(s => s.length > 0).map(s => ({ text: s, done: false }));
-                    }
-
-                    state.tasks.push({ 
-                        id: 'task_' + Date.now(),
-                        text: val, 
-                        targetCount: targetVal, 
-                        currentCount: 0, 
-                        done: false, 
-                        dueDate: dueDateVal || null,
-                        subtasks: subtasks
-                    });
-                }
-                saveData();
-                render();
-            } else if (state.activeTab === 'habits') {
-                if (val) {
-                    state.habits.push({ 
-                        text: val, 
-                        targetCount: targetVal, 
-                        todayCount: 0, 
-                        streak: 0, 
-                        lastCompletedDate: "" 
-                    });
-                }
-                saveData();
-                render();
-            } else if (state.activeTab === 'schedule') {
-                if (val) {
-                    state.schedule.push({ time: timeVal, text: val, done: false });
-                    state.schedule.sort((a, b) => a.time.localeCompare(b.time));
-                }
-                saveData();
-                render();
-            } else if (state.activeTab === 'mood') {
-                if (selectedMediaBase64 && db) {
-                    const tx = db.transaction("media", "readwrite");
-                    const store = tx.objectStore("media");
-                    store.add({
-                        type: selectedMediaType,
-                        data: selectedMediaBase64,
-                        createdAt: new Date().getTime()
-                    });
-                    tx.oncomplete = () => { loadMediaFromDB(); };
-                }
-            }
-            closeModal();
-        }
-
-        function loadMediaFromDB() {
-            if (!db) return;
-            const tx = db.transaction("media", "readonly");
-            const store = tx.objectStore("media");
-            const getAll = store.getAll();
-            getAll.onsuccess = () => {
-                state.mediaList = getAll.result.reverse();
-                renderMedia();
-            };
-        }
-
-        function deleteMedia(id) {
-            if (confirm("Удалить из галереи?")) {
-                const tx = db.transaction("media", "readwrite");
-                const store = tx.objectStore("media");
-                store.delete(id);
-                tx.oncomplete = () => { loadMediaFromDB(); };
-            }
-        }
-
+        // Удаление
         function deleteItem(type, index) {
-            const item = state[type][index];
-            if (type === 'tasks' && item && item.id === state.starTaskId) {
-                state.starTaskId = null;
+            if (confirm("Удалить эту запись?")) {
+                state[type].splice(index, 1);
+                saveData();
+                render();
             }
-            state[type].splice(index, 1);
+        }
+
+        // Переключение чекбокса
+        function toggleTask(index) {
+            state.tasks[index].done = !state.tasks[index].done;
             saveData();
             render();
         }
 
-        function triggerVibration(type) {
-            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
-                const haptic = window.Telegram.WebApp.HapticFeedback;
-                if (type === 'light') haptic.impactOccurred('light');
-                else if (type === 'medium') haptic.impactOccurred('medium');
-                else if (type === 'success') haptic.notificationOccurred('success');
-            }
-        }
-
-        function formatDueDate(dateStr) {
-            if (!dateStr) return "";
-            const [y, m, d] = dateStr.split('-');
-            const months = ['янв', 'февр', 'марта', 'апр', 'мая', 'июня', 'июля', 'авг', 'сент', 'окт', 'нояб', 'декаб'];
-            return `до ${parseInt(d, 10)} ${months[parseInt(m, 10) - 1]}`;
-        }
-
-        function renderMedia() {
-            const grid = document.getElementById('images-grid');
-            const emptyNotice = document.getElementById('mood-empty');
-
-            if (!state.mediaList || state.mediaList.length === 0) {
-                emptyNotice.classList.remove('hidden');
-                grid.innerHTML = '';
-                return;
-            } else {
-                emptyNotice.classList.add('hidden');
-            }
-
-            grid.innerHTML = state.mediaList.map((item) => {
-                if (item.type === 'video') {
-                    return `
-                        <div class="break-inside-avoid mb-3 card overflow-hidden relative shadow-sm">
-                            <video src="${item.data}" autoplay muted loop playsinline class="w-full object-cover rounded-2xl block"></video>
-                            <button onclick="deleteMedia(${item.id})" class="absolute top-2 right-2 bg-[#EDE6D8]/80 text-[#311B14] rounded-full w-6 h-6 text-[10px] flex items-center justify-center shadow-md">✕</button>
-                        </div>
-                    `;
-                } else {
-                    return `
-                        <div class="break-inside-avoid mb-3 card overflow-hidden relative shadow-sm">
-                            <img src="${item.data}" class="w-full object-cover rounded-2xl block">
-                            <button onclick="deleteMedia(${item.id})" class="absolute top-2 right-2 bg-[#EDE6D8]/80 text-[#311B14] rounded-full w-6 h-6 text-[10px] flex items-center justify-center shadow-md">✕</button>
-                        </div>
-                    `;
-                }
-            }).join('');
-        }
-
-        // ==================== ОБЩАЯ ОТРИСОВКА ====================
+        // Отрисовка
         function render() {
-            const today = getTodayString();
-
-            // 1. ЗАДАЧИ
-            // Присваиваем id старым задачам, если их не было
-            state.tasks.forEach((t, i) => { if (!t.id) t.id = 'task_' + i; });
-
-            const starContainer = document.getElementById('star-task-container');
-            const starTaskIndex = state.tasks.findIndex(t => t.id === state.starTaskId);
-
-            if (starTaskIndex !== -1) {
-                const st = state.tasks[starTaskIndex];
-                const formattedDate = formatDueDate(st.dueDate);
-                const target = st.targetCount || 1;
-                const current = st.currentCount || 0;
-                const isMulti = target > 1;
-
-                starContainer.innerHTML = `
-                    <div class="card card-star p-4 mb-4">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-[10px] uppercase font-bold tracking-widest text-[#311B14] flex items-center gap-1">
-                                ⭐️ ГЛАВНАЯ ПОБЕДА ДНЯ
-                            </span>
-                            <button onclick="toggleStarTask('${st.id}')" class="text-xs opacity-50 p-1">✕</button>
-                        </div>
-                        <div class="flex items-center">
-                            ${isMulti ? `
-                                <button onclick="incrementTaskCount(${starTaskIndex})" class="counter-pill ${st.done ? 'opacity-40 line-through' : ''}">
-                                    ${current}/${target}
-                                </button>
-                            ` : `
-                                <input type="checkbox" ${st.done ? 'checked' : ''} onchange="incrementTaskCount(${starTaskIndex})" class="custom-checkbox">
-                            `}
-                            <div class="ml-3.5 flex-grow cursor-pointer" onclick="incrementTaskCount(${starTaskIndex})">
-                                <span class="text-base font-semibold ${st.done ? 'line-through opacity-40' : ''}">${st.text}</span>
-                                ${formattedDate ? `<span class="text-[10px] opacity-60 block mt-0.5">${formattedDate}</span>` : ''}
-                            </div>
-                        </div>
-
-                        ${st.subtasks && st.subtasks.length > 0 ? `
-                            <div class="mt-3 pt-2.5 border-t border-[#311B14]/10 space-y-1.5 pl-2">
-                                ${st.subtasks.map((sub, sIdx) => `
-                                    <div class="flex items-center gap-2.5">
-                                        <input type="checkbox" ${sub.done ? 'checked' : ''} onchange="toggleSubtask(${starTaskIndex}, ${sIdx})" class="sub-checkbox">
-                                        <span class="text-xs ${sub.done ? 'line-through opacity-40' : ''}">${sub.text}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            } else {
-                starContainer.innerHTML = '';
-            }
-
-            // Обычный список задач
+            // Рендер задач
             const tasksList = document.getElementById('tasks-list');
-            tasksList.innerHTML = state.tasks.map((t, i) => {
-                const formattedDate = formatDueDate(t.dueDate);
-                const target = t.targetCount || 1;
-                const current = t.currentCount || 0;
-                const isMulti = target > 1;
-                const isStar = (t.id === state.starTaskId);
-
-                return `
-                    <div class="card p-4 shadow-sm">
-                        <div class="flex items-center">
-                            ${isMulti ? `
-                                <button onclick="incrementTaskCount(${i})" class="counter-pill ${t.done ? 'opacity-40 line-through' : ''}">
-                                    ${current}/${target}
-                                </button>
-                            ` : `
-                                <input type="checkbox" ${t.done ? 'checked' : ''} onchange="incrementTaskCount(${i})" class="custom-checkbox">
-                            `}
-                            
-                            <div class="ml-3.5 flex-grow flex flex-col justify-center cursor-pointer" onclick="incrementTaskCount(${i})">
-                                <span class="text-sm ${t.done ? 'line-through opacity-40' : ''}">${t.text}</span>
-                                ${formattedDate ? `<span class="text-[10px] text-[#311B14]/60 font-medium mt-0.5">${formattedDate}</span>` : ''}
-                            </div>
-
-                            <button onclick="toggleStarTask('${t.id}')" class="text-sm px-1.5 opacity-60 hover:opacity-100" title="Сделать главной победой дня">
-                                ${isStar ? '⭐️' : '☆'}
-                            </button>
-                            <button onclick="deleteItem('tasks', ${i})" class="text-xs opacity-25 p-1 ml-1">✕</button>
-                        </div>
-
-                        ${t.subtasks && t.subtasks.length > 0 ? `
-                            <div class="mt-2.5 pt-2 border-t border-[#311B14]/10 space-y-1.5 pl-6">
-                                ${t.subtasks.map((sub, sIdx) => `
-                                    <div class="flex items-center gap-2">
-                                        <input type="checkbox" ${sub.done ? 'checked' : ''} onchange="toggleSubtask(${i}, ${sIdx})" class="sub-checkbox">
-                                        <span class="text-xs ${sub.done ? 'line-through opacity-40' : ''}">${sub.text}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('');
-
-            // 2. ПРИВЫЧКИ
-            const habitsList = document.getElementById('habits-list');
-            habitsList.innerHTML = state.habits.map((h, i) => {
-                const target = h.targetCount || 1;
-                const isToday = (h.lastCompletedDate === today);
-                const current = isToday ? (h.todayCount || 0) : 0;
-                const isCompleted = current >= target;
-                const isMulti = target > 1;
-
-                return `
-                    <div class="card flex justify-between items-center p-4 shadow-sm">
-                        <div class="flex items-center">
-                            ${isMulti ? `
-                                <button onclick="incrementHabitCount(${i})" class="counter-pill ${isCompleted ? 'opacity-40' : ''}">
-                                    ${current}/${target}
-                                </button>
-                            ` : `
-                                <input type="checkbox" ${isCompleted ? 'checked' : ''} onchange="incrementHabitCount(${i})" class="custom-checkbox">
-                            `}
-                            
-                            <div class="ml-3.5 cursor-pointer" onclick="incrementHabitCount(${i})">
-                                <p class="font-medium text-sm ${isCompleted ? 'line-through opacity-40' : ''}">${h.text}</p>
-                                <p class="text-[10px] uppercase tracking-wider opacity-60 mt-0.5">Серия: ${h.streak} 🔥</p>
-                            </div>
-                        </div>
-                        <button onclick="deleteItem('habits', ${i})" class="text-xs opacity-25 p-1">✕</button>
-                    </div>
-                `;
-            }).join('');
-
-            // 3. РАСПОРЯДОК ДНЯ
-            const scheduleList = document.getElementById('schedule-list');
-            scheduleList.innerHTML = state.schedule.map((s, i) => `
-                <div class="card flex items-center p-3.5 shadow-sm">
-                    <div class="text-xs font-semibold px-2 py-1 bg-[#EDE6D8] rounded-lg border border-[#311B14]/10 shrink-0">
-                        ${s.time}
-                    </div>
-                    <div class="ml-3 flex-grow text-sm ${s.done ? 'line-through opacity-40' : ''} cursor-pointer" onclick="toggleScheduleItem(${i})">
-                        ${s.text}
-                    </div>
-                    <input type="checkbox" ${s.done ? 'checked' : ''} onchange="toggleScheduleItem(${i})" class="custom-checkbox ml-2">
-                    <button onclick="deleteItem('schedule', ${i})" class="text-xs opacity-25 p-1 ml-2">✕</button>
+            tasksList.innerHTML = state.tasks.map((t, i) => `
+                <div class="card flex items-center p-4">
+                    <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${i})">
+                    <span class="ml-4 flex-grow ${t.done ? 'line-through opacity-50' : ''}">${t.text}</span>
+                    <button onclick="deleteItem('tasks', ${i})" class="text-xs opacity-30">✕</button>
                 </div>
             `).join('');
 
-            // 4. ПРОГРЕСС-БАР ДНЯ
-            const totalItems = state.tasks.length + state.schedule.length;
-            const completedItems = state.tasks.filter(t => t.done).length + state.schedule.filter(s => s.done).length;
-            const percent = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
-            
-            document.getElementById('progress-percent').innerText = `${percent}%`;
-            document.getElementById('progress-bar').style.width = `${percent}%`;
+            // Рендер привычек
+            const habitsList = document.getElementById('habits-list');
+            habitsList.innerHTML = state.habits.map((h, i) => `
+                <div class="card flex justify-between items-center p-4">
+                    <div>
+                        <p class="font-medium">${h.text}</p>
+                        <p class="text-xs opacity-60">Прогресс: ${h.streak} дн.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="state.habits[${i}].streak++; saveData(); render();" class="bg-[#311B14]/5 px-3 py-1 rounded-lg text-sm">🔥 +1</button>
+                        <button onclick="deleteItem('habits', ${i})" class="text-xs opacity-30 ml-2">✕</button>
+                    </div>
+                </div>
+            `).join('');
 
-            renderRewards();
-            renderMoodTracker();
-            renderThoughtsArchive();
-            renderMedia();
+            // Рендер мотивации
+            const grid = document.getElementById('images-grid');
+            grid.innerHTML = state.images.map((img, i) => `
+                <div class="aspect-[3/4] card overflow-hidden relative group">
+                    <img src="${img}" class="w-full h-full object-cover">
+                    <button onclick="deleteItem('images', ${i})" class="absolute top-2 right-2 bg-white/50 rounded-full w-6 h-6 text-xs shadow-sm">✕</button>
+                </div>
+            `).join('');
         }
 
-        renderDate();
+        // Запуск при старте
         render();
-        updateTimerDisplay();
 
+        // Подключение к Telegram
         if (window.Telegram && window.Telegram.WebApp) {
             const tg = window.Telegram.WebApp;
             tg.expand();
